@@ -1,8 +1,11 @@
+{- |
+	図形の分割に関するモジュール
+-}
 module Divider where
 
 import Figure
 
--- 図形をより小さい、順序づけられた任意個の図形へ分割する関数
+-- | 図形をより小さい、順序づけられた任意個の図形へ分割する関数
 type Divider = Figure -> [Figure]
 
 lrDivider :: Int -> Divider
@@ -28,9 +31,11 @@ tbDivider _ _ = []
 reverseDivider :: Divider -> Divider
 reverseDivider div fig = reverse $ div fig
 
--- Divider を組み合わせる。
--- 与えられた図形を最初の Divider で割り、その結果を全て次の Divider で割り…
--- という Divider が得られる
+{- |
+	Divider を組み合わせる。
+	与えられた図形を最初の Divider で割り、その結果を全て次の Divider で割り…
+	という Divider が得られる
+-}
 compositeDivider :: [Divider] -> Divider
 compositeDivider = foldl (\div accum -> concatMap accum . div) (: [])
 

@@ -1,3 +1,6 @@
+{- |
+	色の生成に関するモジュール
+-}
 module ColourGen where
 
 import Control.Monad.State
@@ -25,7 +28,7 @@ randomStep (min, max) (dMin, dMax) {-times-} = do
 	put (newVal, newGen)
 	return newVal
 
--- val の値を [min, max] の範囲内に限定する
+-- | val の値を [min, max] の範囲内に限定する
 limit :: (Ord a) => (a, a) -> a -> a
 limit (min, max) val =
 	if val < min then min else if max < val then max else val
@@ -58,8 +61,10 @@ splitRandomGens g =
 	in
 		g1 : splitRandomGens g2
 
--- リストの要素を偶数番目は先頭から、奇数番目は末尾から並べることで
--- 大体左右対称にする
+{- |
+	リストの要素を偶数番目は先頭から、奇数番目は末尾から並べることで
+	大体左右対称にする
+-}
 synmetric :: [a] -> [a]
 synmetric xs =
 	let

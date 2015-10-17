@@ -1,5 +1,8 @@
 {-# OPTIONS_GHC -XRankNTypes #-}
 
+{- |
+	Tiles アプリケーション
+-}
 module Tiles where
 
 import Codec.Picture.Types
