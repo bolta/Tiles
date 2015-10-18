@@ -45,7 +45,10 @@ drawFigure ctx fig img =
 					)
 			where
 				isOnStroke x y w h i j =
-					elem i [x, x + w - 1] || elem j [y, y + h - 1]
+-- タイルが細かいとき枠線が重複して暗くなるので右・下を省く
+-- （Processing 版と同様）
+--					elem i [x, x + w - 1] || elem j [y, y + h - 1]
+					i == x || j == y
 
 makeBitmapFileFromProc :: Int -> Int -> FilePath -> Colour -> DrawProc -> IO ()
 makeBitmapFileFromProc width height filePath backColour drawProc =
