@@ -5,6 +5,7 @@ module ColourGen where
 
 import Control.Monad.State
 import Data.Fixed (mod')
+import Data.List (transpose)
 import System.Random
 
 import Colour
@@ -74,4 +75,8 @@ synmetric xs =
 		odds = evenOdd 1
 	in
 		evens ++ reverse odds
+
+-- | 複数のリストから順番に 1 要素ずつ取って 1 つのリストにする
+alternate :: [[a]] -> [a]
+alternate = concat . transpose  
 
