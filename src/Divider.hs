@@ -43,6 +43,24 @@ compositeDivider :: [Divider] -> Divider
 compositeDivider = foldl (\div accum -> concatMap accum . div) (: [])
 
 {- |
+	他の Divider で分割した結果の図形に一定の変換を施し、
+	位置は変換前の位置に戻して結果とする Divider
+-}
+transformDivider :: (Figure -> Figure) -> Divider -> Divider
+transformDivider trans div fig@(Rect (x, y) (w, h)) =
+	let
+		orig = div fig
+		toOrigPos = translate $ position fig .- (position $ trans fig)
+	in
+		map (toOrigPos . trans) orig
+
+-- | 位置はそのままで左右反転する Divider
+mirrorXDivider = transformDivider mirrorX
+
+-- | 位置はそのままで上下反転する Divider
+mirrorYDivider = transformDivider mirrorY
+
+{- |
 	
 -}
 matrixDivider :: (Vec2d -> [Vec2d]) -> Vec2d -> Divider
@@ -60,3 +78,7 @@ matrixDivider arrangeTiles tileSize@(tileW, tileH)
 lrtbDivider :: Vec2d -> Divider
 lrtbDivider =
 	matrixDivider (\(w, h) -> [(x, y) | y <- [0 .. h - 1], x <- [0 .. w - 1]])
+rltbDivider = mirrorXDivider . lrtbDivider
+lrbtDivider = mirrorYDivider . lrtbDivider
+rlbtDivider = mirrorXDivider . lrbtDivider
+
