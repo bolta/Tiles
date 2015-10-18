@@ -28,6 +28,9 @@ tbDivider count (Rect (l, t) (w, h)) =
 		zipWith (\t h -> Rect (l, t) (w, h)) tops heights
 tbDivider _ _ = []
 
+{- |
+	図形の順序を逆転する Divider
+-}
 reverseDivider :: Divider -> Divider
 reverseDivider div fig = reverse $ div fig
 
@@ -39,4 +42,21 @@ reverseDivider div fig = reverse $ div fig
 compositeDivider :: [Divider] -> Divider
 compositeDivider = foldl (\div accum -> concatMap accum . div) (: [])
 
+{- |
+	
+-}
+matrixDivider :: (Vec2d -> [Vec2d]) -> Vec2d -> Divider
+matrixDivider arrangeTiles tileSize@(tileW, tileH)
+		(Rect (rectL, rectT) (rectW, rectH)) =
+	let
+		wholeLen `divByTiles` tileLen = (wholeLen - 1) `div` tileLen + 1
+		numTilesWH = (rectW `divByTiles` tileW, rectH `divByTiles` tileH)
+		tileOrderByIndex = arrangeTiles numTilesWH
+		tileIndexToRect (x, y) =
+			Rect (rectL + tileW * x, rectT + tileH * y) tileSize
+	in
+		map tileIndexToRect tileOrderByIndex
 
+lrtbDivider :: Vec2d -> Divider
+lrtbDivider =
+	matrixDivider (\(w, h) -> [(x, y) | y <- [0 .. h - 1], x <- [0 .. w - 1]])
