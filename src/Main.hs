@@ -38,5 +38,5 @@ figures = rootDivider $ Rect (0, 0) imgSize
 --main = makeBitmapFileFromProc width height "main.bmp" (Rgb 0 0 0)
 --	$ drawTiles (map fromColour colours) figures
 main =
-	drawTilesOnBitmapFile width height "main.bmp" (Rgb 0 0 0)
+	drawTilesOnBitmapFile imgSize "main.bmp" (Rgb 0 0 0)
 		(map fromColour colours) figures

@@ -12,14 +12,14 @@ import Draw
 import Figure
 import GraphicsContext
 
-drawTiles :: Int -> Int -> [GraphicsContext] -> [Figure] -> DrawProc
-drawTiles width height ctxs figs img =
-	let procs = zipWith (drawFigure width height) ctxs figs
+drawTiles :: Vec2d -> [GraphicsContext] -> [Figure] -> DrawProc
+drawTiles imgSize ctxs figs img =
+	let procs = zipWith (drawFigure imgSize) ctxs figs
 	in sequence_ $ map ($ img) procs
 
-drawTilesOnBitmapFile :: Int -> Int -> FilePath -> Colour
+drawTilesOnBitmapFile :: Vec2d -> FilePath -> Colour
 	-> [GraphicsContext] -> [Figure] -> IO ()
-drawTilesOnBitmapFile width height filePath backColour ctxs figs =
-	makeBitmapFileFromProc width height filePath backColour
-		$ drawTiles width height ctxs figs
+drawTilesOnBitmapFile imgSize filePath backColour ctxs figs =
+	makeBitmapFileFromProc imgSize filePath backColour
+		$ drawTiles imgSize ctxs figs
 
