@@ -12,12 +12,14 @@ import Draw
 import Figure
 import GraphicsContext
 
-drawTiles :: [GraphicsContext] -> [Figure] -> DrawProc
-drawTiles figs ctxs img =
-	let procs = zipWith drawFigure figs ctxs
+drawTiles :: Int -> Int -> [GraphicsContext] -> [Figure] -> DrawProc
+drawTiles width height ctxs figs img =
+	let procs = zipWith (drawFigure width height) ctxs figs
 	in sequence_ $ map ($ img) procs
---		foldl (>>) (return ()) procs
-		-- ((return () >> procs !! 0) >> procs !! 1)
-		-- return ()
-	
+
+drawTilesOnBitmapFile :: Int -> Int -> FilePath -> Colour
+	-> [GraphicsContext] -> [Figure] -> IO ()
+drawTilesOnBitmapFile width height filePath backColour ctxs figs =
+	makeBitmapFileFromProc width height filePath backColour
+		$ drawTiles width height ctxs figs
 

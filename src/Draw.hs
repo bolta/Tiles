@@ -24,12 +24,13 @@ toPixel col =
 	in
 		PixelRGB8 r' g' b'
 
-drawFigure :: GraphicsContext -> Figure -> DrawProc
-drawFigure ctx fig img =
-	case fig of
+drawFigure :: Int -> Int -> GraphicsContext -> Figure -> DrawProc
+drawFigure imgW imgH ctx fig img =
+	let write = \x y col -> writePixelSafely imgW imgH x y col img
+	in case fig of
 		Dot (x, y) ->
 			case strokeColour ctx of
-				Just c -> writePixel img x y $ toPixel c
+				Just c -> write x y c
 				Nothing -> return ()
 		Rect (x, y) (w, h) -> do
 			forM_ [(i, j) | i <- [x .. x + w - 1], j <- [y .. y + h - 1]]
@@ -40,7 +41,7 @@ drawFigure ctx fig img =
 							_ -> fillColour ctx
 					in
 						case pixCol of
-							Just c -> writePixel img i j $ toPixel c
+							Just c -> write i j c
 							Nothing -> return ()
 					)
 			where
@@ -49,6 +50,13 @@ drawFigure ctx fig img =
 -- iProcessing ”Å‚Æ“¯—lj
 --					elem i [x, x + w - 1] || elem j [y, y + h - 1]
 					i == x || j == y
+
+writePixelSafely :: Int -> Int -> Int -> Int -> Colour -> DrawProc
+writePixelSafely w h x y col img =
+	if 0 <= x && x < w && 0 <= y && y < h then
+		writePixel img x y $ toPixel col
+	else
+		return ()
 
 makeBitmapFileFromProc :: Int -> Int -> FilePath -> Colour -> DrawProc -> IO ()
 makeBitmapFileFromProc width height filePath backColour drawProc =
@@ -71,8 +79,3 @@ writeBitmapFunc :: Int -> Int -> (Int -> Int -> Colour) -> DrawProc
 writeBitmapFunc width height imageFunc img = do
 	forM_ [(x, y) | y <- [0 .. height - 1], x <- [0 .. width - 1]] (\(x, y) ->
 		writePixel img x y $ toPixel $ imageFunc x y)
-
-
--- test
-d = drawFigure (GraphicsContext (Just $ Rgb 0 1 0) (Just $ Rgb 0 0 1)) $ Rect (100, 100) (200, 200)
-
