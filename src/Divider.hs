@@ -75,6 +75,8 @@ matrixDivider arrangeTiles tileSize@(tileW, tileH)
 	in
 		map tileIndexToRect tileOrderByIndex
 
+-- タイルを左から右に並べた行を、上から下へ並べる Divider。
+-- 引数はタイルのサイズ
 lrtbDivider :: Vec2d -> Divider
 lrtbDivider =
 	matrixDivider (\(w, h) -> [(x, y) | y <- [0 .. h - 1], x <- [0 .. w - 1]])
