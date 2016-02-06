@@ -84,3 +84,15 @@ rltbDivider = mirrorXDivider . lrtbDivider
 lrbtDivider = mirrorYDivider . lrtbDivider
 rlbtDivider = mirrorXDivider . lrbtDivider
 
+-- | 右上がりの斜線を上から下へ並べる Divider
+rutbDiagonalDivider :: Vec2d -> Divider
+rutbDiagonalDivider =
+	matrixDivider (\(w, h) ->
+		let
+			cands = (flip concatMap) [0 .. w + h - 1]
+				(\i -> zip [i, i - 1 .. 0] [0 .. i])
+		in
+			filter (\(x, y) -> x < w && y < h) cands
+		)
+		
+

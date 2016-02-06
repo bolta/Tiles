@@ -28,9 +28,9 @@ main = do
 				$ size settings
 			writeFile "dummy.txt" $ show figures
 
-			runWith settings figures
+			runWith' settings figures
 
-runWith settings figures =
+runWith' settings figures =
 	drawTilesOnBitmapFile
 		(size settings)
 		(outputFile settings)
@@ -39,6 +39,11 @@ runWith settings figures =
 		figures
 		-- ↑を↓に替えるとクラッシュする。末尾のコメント参照
 		-- (divider settings $ Rect (0, 0) $ size settings)
+
+-- | ghci から実行するときはこちらを使う。
+-- | 例： runWith defaultSettings { divider = rutbDiagonalDivider (16,16) }
+runWith settings =
+	runWith' settings $ divider settings $ Rect (0, 0) $ size settings	
 
 -- TODO 別のところにやりたい
 coloursFromSeed seed =
