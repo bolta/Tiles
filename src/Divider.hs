@@ -35,6 +35,24 @@ reverseDivider :: Divider -> Divider
 reverseDivider div fig = reverse $ div fig
 
 {- |
+	図形を所定の個数ずつのセクションに分割して、セクションごとに順序を逆転する
+	Divider
+-}
+sectionAndReverseDivider :: Int -> Divider -> Divider
+sectionAndReverseDivider secSize div fig =
+	let figs = div fig
+	in concatMap reverse $ section secSize figs
+		
+
+-- | xsを n 個ずつに分割する
+section :: Int -> [a] -> [[a]]
+section n xs =
+	let (sect, rest) = splitAt n xs
+	in if null rest
+		then [sect]
+		else sect : section n rest
+
+{- |
 	Divider を組み合わせる。
 	与えられた図形を最初の Divider で割り、その結果を全て次の Divider で割り…
 	という Divider が得られる
@@ -94,5 +112,4 @@ rutbDiagonalDivider =
 		in
 			filter (\(x, y) -> x < w && y < h) cands
 		)
-		
 
