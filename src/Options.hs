@@ -10,6 +10,7 @@ import Text.Regex.Posix
 
 import Colour
 import Divider
+import DividerEval
 import Figure hiding (size)
 import Settings
 
@@ -30,8 +31,9 @@ parseCommandLineToSettings args = do
 
 -- | コマンドラインオプションの各項目を表す型
 data Option =
-	RandomSeed String
-	| Size String
+	Size String
+	| DividerExpr String
+	| RandomSeed String
 	| OutputFile String
 	deriving Show
 
@@ -40,6 +42,8 @@ availableOptions = [
 	O.Option ['s'] ["size"] (ReqArg Size "SIZE")
 		("specify image size in WIDTHxHEIGHT format, "
 		++ "where x is an arbitrary non-digit char. default = 1024x768"),
+	O.Option ['x'] ["divider-expr"] (ReqArg DividerExpr "EXPR")
+		"specify divider by Haskell expression",
 	O.Option ['r'] ["random-seed"] (ReqArg RandomSeed "SEED")
 		"specify integer for random seed. default = 0",
 	O.Option ['o'] ["output-file"] (ReqArg OutputFile "PATH")
@@ -63,16 +67,21 @@ makeSettings' :: (Either Error Settings) -> Option
 makeSettings' error@(Left _) option = return error
 makeSettings' (Right settings) option =
 	case option of
-		RandomSeed seedSpec -> do
-			seed <- makeRandomSeed seedSpec
-			return $ case seed of
-				Left error -> Left error
-				Right seedVal -> Right settings { randomSeed = seedVal }
 		Size sizeSpec -> do
 			size <- makeSize sizeSpec
 			return $ case size of
 				Left error -> Left error
 				Right sizeVal -> Right settings { size = sizeVal }
+		DividerExpr expr -> do
+			div <- evalToDivider expr
+			return $ case div of
+				Left error -> Left $ "error in evaluating divider: " ++ error
+				Right divVal -> Right settings { divider = divVal }
+		RandomSeed seedSpec -> do
+			seed <- makeRandomSeed seedSpec
+			return $ case seed of
+				Left error -> Left error
+				Right seedVal -> Right settings { randomSeed = seedVal }
 		OutputFile fileSpec ->
 			return $ Right settings { outputFile = fileSpec }
 
