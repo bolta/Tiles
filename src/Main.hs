@@ -12,6 +12,7 @@ import Colour
 import ColourGen
 import Figure hiding (size)
 import GraphicsContext
+import Log
 import Options
 import Settings
 import Tiles
@@ -30,6 +31,8 @@ main = do
 			writeFile "dummy.txt" $ show figures
 
 			runWith' settings figures
+
+			writeLogFile settings
 
 runWith' settings figures =
 	drawTilesOnBitmapFile
