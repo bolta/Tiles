@@ -3,6 +3,7 @@ module Options (parseCommandLineToSettings, Error) where
 
 import Control.Monad.State
 import Data.Char (isDigit)
+import Data.Maybe (isNothing)
 import Data.List
 import System.Console.GetOpt hiding (Option)
 import qualified System.Console.GetOpt as O (OptDescr(Option))
@@ -54,6 +55,8 @@ parseOptions :: [String] -> ([Option], [String], [String])
 parseOptions args =
 	getOpt Permute availableOptions args
 
+-- | プログラムオプションのセットから設定を作る。
+-- | outputFile は必ず有効な値が入る
 makeSettings :: [Option] -> IO (Either Error Settings)
 makeSettings options = (flip execStateT) (Right defaultSettings) $ do
 	forM_ options (\option -> do
@@ -61,6 +64,13 @@ makeSettings options = (flip execStateT) (Right defaultSettings) $ do
 		newSettings <- lift $ makeSettings' settings option
 		put newSettings
 		)
+	-- サイズが決まらないとデフォルトのファイル名はつけられないので…
+	get >>= \s -> case s of
+		Right settings | isNothing $ outputFile settings -> do
+			filename <- lift $ makeFilenameFromSizeAndTimestamp
+				$ size settings
+			put $ Right settings { outputFile = Just filename }
+		otherwise -> return ()
 
 makeSettings' :: (Either Error Settings) -> Option
 	-> IO (Either Error Settings)
@@ -83,7 +93,7 @@ makeSettings' (Right settings) option =
 				Left error -> Left error
 				Right seedVal -> Right settings { randomSeed = seedVal }
 		OutputFile fileSpec ->
-			return $ Right settings { outputFile = fileSpec }
+			return $ Right settings { outputFile = Just fileSpec }
 
 
 makeSize :: String -> IO (Either Error Vec2d)

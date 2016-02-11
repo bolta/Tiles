@@ -2,6 +2,7 @@ module Main where
 
 import Control.Exception.Base
 import Control.Monad.State (evalState)
+import Data.Maybe (fromJust)
 import System.Environment (getArgs)
 import System.Exit
 import System.IO
@@ -33,7 +34,7 @@ main = do
 runWith' settings figures =
 	drawTilesOnBitmapFile
 		(size settings)
-		(outputFile settings)
+		(fromJust $ outputFile settings)
 		(backColour settings)
 		(map fromColour $ coloursFromSeed $ randomSeed settings)
 		figures

@@ -2,7 +2,8 @@
 module Settings (
 	Settings,
 		size, divider, backColour, randomSeed, outputFile,
-	defaultSettings
+	defaultSettings,
+	makeFilenameFromSizeAndTimestamp
 ) where
 
 import Data.List
@@ -10,6 +11,7 @@ import Data.List
 import Colour
 import Divider
 import Figure hiding (size)
+import Time
 
 -- | プログラムの全ての設定を表す型。
 -- | 各項目はオプションで与えられたり、
@@ -19,7 +21,7 @@ data Settings = Settings {
 	divider :: Divider,
 	backColour :: Colour,
 	randomSeed :: Int,
-	outputFile :: FilePath
+	outputFile :: Maybe FilePath
 	}
 
 -- divider が show できないために show を再発明する羽目に…
@@ -47,6 +49,25 @@ defaultSettings = Settings {
 	divider = lrtbDivider (8, 8),
 	backColour = Rgb 0 0 0,
 	randomSeed = 0,
-	outputFile = "tiles.bmp"
+	outputFile = Nothing
 	}
+
+-- | 画像のサイズと現在時刻からファイル名を作る
+makeFilenameFromSizeAndTimestamp :: Vec2d -> IO FilePath
+makeFilenameFromSizeAndTimestamp (wi, hi) =
+	let (wi', hi') = (pad0 wi, pad0 hi)
+	in do
+		(y, m, d, h, i, s) <- getCurrentTimeYmdhms
+		let
+			y' = show y
+			[m', d', h', i', s'] = map pad0 [m, d, h, i, s]
+
+		return $ wi' ++ "x" ++ hi' ++ "_"
+			++ y' ++ m' ++ d' ++ "-" ++ h' ++ i' ++ s' ++ ".bmp"
+	
+	where
+		pad0 :: Int -> String
+		pad0 i | i < 10 = '0' : show i
+		pad0 i = show i
+
 
