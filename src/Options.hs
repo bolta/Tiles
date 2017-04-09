@@ -11,7 +11,7 @@ import Text.Regex.Posix
 
 import Colour
 import Divider
-import DividerEval
+-- import DividerEval
 import Figure hiding (size)
 import Settings
 
@@ -82,11 +82,11 @@ makeSettings' (Right settings) option =
 			return $ case size of
 				Left error -> Left error
 				Right sizeVal -> Right settings { size = sizeVal }
-		DividerExpr expr -> do
-			div <- evalToDivider expr
-			return $ case div of
-				Left error -> Left $ "error in evaluating divider: " ++ error
-				Right divVal -> Right settings { divider = divVal }
+--		DividerExpr expr -> do
+--			div <- evalToDivider expr
+--			return $ case div of
+--				Left error -> Left $ "error in evaluating divider: " ++ error
+--				Right divVal -> Right settings { divider = divVal }
 		RandomSeed seedSpec -> do
 			seed <- makeRandomSeed seedSpec
 			return $ case seed of
