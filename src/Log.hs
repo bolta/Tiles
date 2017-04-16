@@ -18,7 +18,7 @@ writeLogFile :: Settings -> IO ()
 writeLogFile settings =
 	let
 		settingsStr = formatSettings settings
-		logFile = logFileName $ fromJust $ outputFile settings
+		logFile = logFileName $ outputFile settings
 	in do
 		dateTime <- getCurrentTimeYmdhms >>= return . formatDateTime1
 		args <- getArgs >>= return . unwords

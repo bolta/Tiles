@@ -1,8 +1,8 @@
 -- | プログラムの設定を表現するモジュール
 module Settings (
-	Settings,
+	Settings (Settings),
 		size, divider, backColour, randomSeed, outputFile,
-	defaultSettings,
+--	defaultSettings,
 	makeFilenameFromSizeAndTimestamp
 ) where
 
@@ -21,7 +21,7 @@ data Settings = Settings {
 	divider :: Divider,
 	backColour :: Colour,
 	randomSeed :: Int,
-	outputFile :: Maybe FilePath
+	outputFile :: {- Maybe -} FilePath
 	}
 
 -- divider が show できないために show を再発明する羽目に…
@@ -42,6 +42,7 @@ instance Show Settings where
 		in
 			"Settings {" ++ membersStr ++ "}"
 
+{-
 -- | デフォルト設定。コマンドラインオプションで上書きすることができる
 defaultSettings = Settings {
 	size = (1024, 768),
@@ -51,6 +52,7 @@ defaultSettings = Settings {
 	randomSeed = 0,
 	outputFile = Nothing
 	}
+-}
 
 -- | 画像のサイズと現在時刻からファイル名を作る
 makeFilenameFromSizeAndTimestamp :: Vec2d -> IO FilePath

@@ -19,7 +19,7 @@ import Tiles
 
 main = do
 	args <- getArgs
-	s <- parseCommandLineToSettings args
+	s <- makeSettings args
 	case s of
 		Left error -> do
 			hPutStrLn stderr error
@@ -37,7 +37,7 @@ main = do
 runWith' settings figures =
 	drawTilesOnBitmapFile
 		(size settings)
-		(fromJust $ outputFile settings)
+		(outputFile settings)
 		(backColour settings)
 		(map fromColour $ coloursFromSeed $ randomSeed settings)
 		figures
